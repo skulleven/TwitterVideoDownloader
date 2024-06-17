@@ -6,3 +6,9 @@ twitsave.com - For providing the website.
 
 # Building
 Be sure you have libcurl installed. Then you should be able to just type "make" into the terminal to get an executable.
+
+```C++
+git clone https://github.com/skulleven/TwitterVideoDownloader.git
+cd TwitterVideoDownloader
+make
+```
