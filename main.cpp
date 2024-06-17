@@ -26,9 +26,20 @@ void GetADownloadLink()
     while(getline(HTMLFile, epic))
     {
         //TODO: Loop through 305 306 307 to get the right link as it sometimes doesnt work.
-        if(lineCount == 307)
+        if(lineCount == 305 && epic.find("href="))
         {
             theLineWeWant = epic;
+            break;
+        }
+        if(lineCount == 306 && epic.find("href="))
+        {
+            theLineWeWant = epic;
+            break;
+        }
+        if(lineCount == 307 && epic.find("href="))
+        {
+            theLineWeWant = epic;
+            break;
         }
         lineCount++;
     }
