@@ -2,7 +2,7 @@
 #include "fstream"
 #include "curl/curl.h"
 
-bool debugMode = false;
+bool debugMode = true;
 
 std::string tweet_link;
 std::string response;
@@ -18,9 +18,6 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     return written;
 }
 
-CURL* curl;
-CURLcode res;
-
 void GetADownloadLink()
 {
     int lineCount = 0;
@@ -28,7 +25,8 @@ void GetADownloadLink()
     std::fstream HTMLFile("site.html");
     while(getline(HTMLFile, epic))
     {
-        if(lineCount == 305)
+        //TODO: Loop through 305 306 307 to get the right link as it sometimes doesnt work.
+        if(lineCount == 307)
         {
             theLineWeWant = epic;
         }
@@ -40,14 +38,15 @@ void GetADownloadLink()
     {
         std::cout<< theLineWeWant << std::endl;
     }
+    HTMLFile.close();
 }
 
 
 void GetTheHTMLFile()
 {
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl = curl_easy_init();
-
+    //curl_global_init(CURL_GLOBAL_DEFAULT);
+    CURL* curl = curl_easy_init();
+    CURLcode res;
     if(curl)
     {
         curl_easy_setopt(curl, CURLOPT_URL, ("http://twitsave.com/info?url=" + tweet_link).c_str());
@@ -78,7 +77,8 @@ void DownloadTheFile()
     FILE *videoFile;
     tweet_link.replace(0, 23, "");
     std::string filename = tweet_link + ".mp4";
-    curl = curl_easy_init();
+    CURLcode res;
+    CURL* curl = curl_easy_init();
     if(curl)
     {
         videoFile = fopen(filename.c_str(), "wb");
@@ -91,7 +91,8 @@ void DownloadTheFile()
         {
             std::cout<< "second curl_easy_perform() failed" << curl_easy_strerror(res) << std::endl;
         }
-        else{
+        else
+        {
             long html_code = 0;
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &html_code);
             std::cout<< "Response code : " << html_code << std::endl;
@@ -109,6 +110,11 @@ int main(int argc, char* argv[])
     {
         std::cerr << "Please use an actual tweet link" << std::endl;
         return 0;
+    }
+    if(tweet_link.find("twitter"))
+    {
+        tweet_link.replace(8, 8, "x.");
+        std::cout << tweet_link;
     }
     GetTheHTMLFile();
     GetADownloadLink();
